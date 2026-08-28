@@ -15,6 +15,8 @@ Completed major work units:
 
 Rotation band: **CONTINUE**
 
+R2 preparation alone is not counted as a completed major work unit. The remediation loop closes only after independent R2 Validation and Control Tower disposition.
+
 ## 2. Baseline
 
 Legacy reference:
@@ -35,7 +37,7 @@ Toolchain D:
 
 GitHub operations repository:
 - `minos8458-web/duonix`
-- operational documentation is now stored here.
+- operational documentation is stored here.
 - current LC-01 application source has **not yet been migrated into this repository**.
 
 Git base branch: `미확인` for the current LC-01 source artifact.  
@@ -63,26 +65,37 @@ Current gate state:
   - bytes: `135407`
   - lines: `2638`
 - Previous artifact-receipt blocker `LC-01-A3-IV-RUNNER-ARTIFACT-MISSING-01`: RESOLVED / CLOSED at receipt level.
+- `[DUONIX] 80 Build / Release` completed the authorized R2 PREPARATION ONLY task and returned a new runner artifact.
+- No.4 directly recomputed the R2 artifact identity and confirmed the reported values:
+  - filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R2.ps1`
+  - SHA-256: `cd5c740fbe9b4d759a502b07747f5a542e01ff3effbce71e3f24c570944163d2`
+  - bytes: `138460`
+  - lines: `2707`
+- No.4 read-only spot-check confirmed the reported blocker-related code structures are present, including exact W3C `-ceq` comparison, no `return $null` in the local HTML resolver, all-text-bearing protocol-relative scan evidence, complete explicit build-owned path binding, exactly one Official Build launch site, and exactly one expected-37 probe launch site.
 
 ## 5. Open / HOLD
 
-Independent Pre-Execution Runner Artifact Validation result:
+R1 independent Pre-Execution Runner Artifact Validation result remains the last independent verdict:
 - `FAIL / HOLD`
 - blockers: `4`
 
-Open runner-level blockers:
+R2 claims fixes for all four blockers, but none are closed until independent Validation confirms them:
 
 1. `LC-01-A3-IV-W3C-NAMESPACE-PREFIX-ALLOWLIST-01`
-   - W3C namespace authority matching uses prefix semantics rather than exact/fail-closed authority.
+   - R2 claimed fix: exact case-sensitive W3C namespace authority equality.
+   - status: `PENDING INDEPENDENT R2 VALIDATION`.
 2. `LC-01-A3-IV-HTML-RUNTIME-RESOURCE-NONLOCAL-BYPASS-01`
-   - nonlocal schemes such as `data:`, `blob:`, `mailto:`, `tel:`, `javascript:` can bypass actual dist-file resolution.
+   - R2 claimed fix: fail-closed runtime src/href resolver with unconditional emitted-dist existence gate.
+   - status: `PENDING INDEPENDENT R2 VALIDATION`.
 3. `LC-01-A3-IV-PROTOCOL-RELATIVE-SCAN-SCOPE-01`
-   - protocol-relative runtime-resource scan scope is narrower than the global-zero authority claimed.
+   - R2 claimed fix: all text-bearing production output including JS/MJS.
+   - status: `PENDING INDEPENDENT R2 VALIDATION`.
 4. `LC-01-A3-IV-BUILD-WORKSPACE-LEAK-SCOPE-01`
-   - absolute-path leakage audit is bound to `$BuildSource`, not the complete Attempt-3 build workspace/root.
+   - R2 claimed fix: full Attempt-3 build root plus explicit build-owned path authorities.
+   - status: `PENDING INDEPENDENT R2 VALIDATION`.
 
-Classification:
-- `VALIDATION-INFRA / PRE-EXECUTION RUNNER DEFECTS`
+Classification remains:
+- `VALIDATION-INFRA / PRE-EXECUTION RUNNER DEFECTS` until independently revalidated.
 - NOT Candidate product defects.
 - NOT evidence of CPU Speed Slider Direction Fix failure.
 - NOT Toolchain D corruption.
@@ -90,40 +103,40 @@ Classification:
 
 ## 6. Latest Independent Validation
 
-Result:
+Latest independent verdict remains R1 runner gate:
 - `PRE-EXECUTION RUNNER ARTIFACT VALIDATION = FAIL / HOLD`
 - blockers: `4`
 
-Not executed:
-- Windows PowerShell parser
-- runner execution
-- Official Build Attempt 3
-- Galaxy Validation
+R2 independent validation:
+- `NOT YET EXECUTED`
+
+Windows PowerShell parser for R2:
+- `NOT EXECUTED` in the Build/Release preparation environment.
 
 ## 7. Build / Release State
 
 Official Build lifetime invocation count: **2**  
 Attempt 3: **NOT EXECUTED / NOT AUTHORIZED**  
+R2 runner execution: **0**  
 Reservation marker creation: **NOT AUTHORIZED**  
 Launch marker creation: **NOT AUTHORIZED**  
+Freeze candidate creation for Attempt 3: **NOT EXECUTED**  
 Galaxy Validation: **NOT EXECUTED**
 
 Historical frozen-dist candidate is not authoritative for the current post-slider-fix source.
 
 ## 8. Current Control Tower Approval
 
-`[DUONIX] 80 Build / Release` is authorized for **R2 RUNNER PREPARATION ONLY**.
+R2 PREPARATION ONLY is complete.
 
-Allowed scope:
-- correct exactly the four open pre-execution runner blockers,
-- preserve existing PASS areas unless a minimal dependency is necessary to fix those blockers,
-- create a new immutable runner artifact with a new identity.
+The new R2 runner is **NOT AUTHORIZED FOR EXECUTION**.
 
-Recommended new filename:
-- `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R2.ps1`
+Control Tower authorizes only the next independent gate:
+- `[DUONIX] 70 Validation / Integration`
+- `LC-01 OFFICIAL BUILD ATTEMPT 3 — R2 PRE-EXECUTION RUNNER ARTIFACT VALIDATION`
 
 Explicitly not authorized:
-- runner execution,
+- R2 runner execution,
 - Official Build Attempt 3,
 - reservation creation,
 - launched-marker creation,
@@ -133,8 +146,8 @@ Explicitly not authorized:
 - LC01-MOB-06+ progression,
 - LC-02 activation,
 - application-source modification,
-- commit/push/PR/deploy for the game source.
+- game source commit/push/PR/deploy.
 
 ## 9. Next Single Action
 
-**Send the approved R2 RUNNER PREPARATION ONLY instruction to `[DUONIX] 80 Build / Release`, then wait for the new runner artifact plus filename / SHA-256 / bytes / lines and blocker-by-blocker change evidence.**
+**Provide the exact R2 runner artifact to `[DUONIX] 70 Validation / Integration` and perform a fresh independent R2 Pre-Execution Runner Artifact Gate. Do not execute the runner or Official Build Attempt 3.**
