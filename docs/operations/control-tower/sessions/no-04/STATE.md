@@ -16,7 +16,7 @@ Completed major work units:
 
 Rotation band: **CONTINUE**
 
-The Official Build Attempt 3 cycle remains open. R3 has executed through source-authority verification, but the Official Build process itself has not launched and Attempt 3 is not consumed.
+The Official Build Attempt 3 cycle remains open. R3 executed through source-authority verification and was blocked before reservation/build launch because Toolchain D was absent from the exact path expected by R3. Attempt 3 remains unconsumed.
 
 ## 2. Baseline
 
@@ -33,9 +33,11 @@ Current canonical source artifact:
 
 Toolchain D authority:
 - filename: `duonix-app-lc-01-toolchain-win-x64-node24.18.0-npm11.16.0.zip`
-- expected bytes: `51,403,257`
+- bytes: `51,403,257`
 - SHA-256: `9e13ed3129cae04692143d4b07419cc98c1f2fc2561d72895c8135eb2abd86ec`
 - internal manifest SHA-256: `3064ed4fa2e7a90fe2f5422055a3ea9d7abaf14fe9a0d2e460bd9eaf0097cbaa`
+- exact Windows artifact independently re-located at: `C:\Users\atomy\Downloads\DUONIX-LC01-HG-FREEZE-R8\artifacts\duonix-app-lc-01-toolchain-win-x64-node24.18.0-npm11.16.0.zip`
+- direct Windows verification: `EXISTS=True`, bytes and SHA exactly match authority.
 
 GitHub operations repository:
 - `minos8458-web/duonix`
@@ -61,58 +63,27 @@ Current gates:
 - lines: `2709`
 - independent pre-execution Validation: `FINAL PASS / blockers 0`
 
-Historical R1 and R2 runners remain non-authoritative for execution.
+Transport normalization removed only `Zone.Identifier`; R3 default-stream SHA/bytes/lines remained unchanged.
 
-Transport normalization before controlled execution removed only `Zone.Identifier`; exact R3 default-stream SHA/bytes/lines remained unchanged and `RVContext` remained present.
+## 5. Controlled R3 Execution — Direct Evidence
 
-## 5. Controlled R3 Execution — Direct Evidence Receipt
+Controlled R3 execution reached:
+- runner initialization with lifetime invocation count `2`,
+- `SOURCE_AUTHORITY_VERIFY = PASS`.
 
-Control Tower authorized exactly one R3 execution through the validated child `-Command` transport after exact guard verification.
-
-Observed execution logs:
-- `Official Build Attempt 3 runner initialized. Current lifetime invocation count=2.`
-- `Canonical source authority PASS. bytes=1504018 files=416 directories=62 manifest_sha256=348669f7cf77af63b5dc1756500182cce6fe345a2955b8eab98f09b984bade37`
-
-Observed wrapper return:
-- `R3_CHILD_EXITCODE=1`
-
-The wrapper return code is not used as the primary stage authority. Persistent R3 status/evidence is authoritative for the disposition below.
-
-Post-execution diagnostic transfer ZIP received and directly inspected by Control Tower:
-- filename: `DUONIX-LC01-A3-RESULT-TRANSFER-DIAG-20260829-193458.zip`
+Persistent evidence directly inspected from transfer ZIP:
+- ZIP: `DUONIX-LC01-A3-RESULT-TRANSFER-DIAG-20260829-193458.zip`
 - SHA-256: `dde0459845088dba62421120d178e303d179c7ea5932e1e1d14302b85fe63c04`
-- bytes: `79,781`
-- ZIP entries: `11`
-
-Directly inspected status JSON:
-- filename: `evidence/duonix-app-lc-01-official-build-status.json`
-- SHA-256: `564c1ac43b70672e76b485077d788b088d4a0c1be557414db1dc62adefcffa5a`
-- bytes: `1,224`
 - status: `BLOCKED`
 - stage: `TOOLCHAIN_D_AUTHORITY_VERIFY`
-- message: `Frozen Toolchain D ZIP missing: C:\Users\atomy\Downloads\duonix-app-lc-01-toolchain-win-x64-node24.18.0-npm11.16.0.zip`
+- message: frozen Toolchain D ZIP missing from `C:\Users\atomy\Downloads\duonix-app-lc-01-toolchain-win-x64-node24.18.0-npm11.16.0.zip`
 - official_build_lifetime_invocation_count: `2`
-- current_attempt_number: `3`
 - official_build_exit_code: `null`
-- npm_dependency_provisioning_invocations: `0`
-- lock_regeneration_invocations: `0`
-- direct_vite_production_build_invocations: `0`
-- galaxy_validation_started: `false`
-- deploy: `0`
+- npm dependency provisioning invocations: `0`
+- direct Vite production build invocations: `0`
+- Galaxy Validation: `false`
 
-Directly inspected runner log:
-- SHA-256: `79ecd1e6d4c4e065d02def74b12a653ec8b6608326c810c626ae8a736211bd7b`
-- contains only runner initialization and canonical-source PASS entries.
-
-Direct source-authority evidence in the transfer ZIP confirms:
-- canonical source filename and SHA match current authority,
-- canonical source bytes = `1,504,018`,
-- file count = `416`,
-- directory count = `62`,
-- ZIP-derived/source manifest SHA-256 = `348669f7cf77af63b5dc1756500182cce6fe345a2955b8eab98f09b984bade37`,
-- extracted prebuild files = `416`, directories = `62`.
-
-Attempt-3 persistent authorities after the block:
+Attempt-3 authorities after block:
 - reservation marker: **ABSENT**
 - launched marker: **ABSENT**
 - provenance candidate: **ABSENT**
@@ -120,57 +91,44 @@ Attempt-3 persistent authorities after the block:
 
 Therefore:
 - R3 top-level runner: **EXECUTED**
-- `SOURCE_AUTHORITY_VERIFY`: **PASS**
-- `TOOLCHAIN_D_AUTHORITY_VERIFY`: **BLOCKED — required frozen ZIP absent at exact expected path**
 - Official Build process: **NOT LAUNCHED**
 - Attempt 3: **NOT CONSUMED**
 - lifetime Official Build invocation count: **2**
-- Galaxy Validation: **NOT EXECUTED**
 
 ## 6. Current Workspace State
 
-Exact generated BuildRoot:
+Existing pre-launch blocked BuildRoot:
 - `C:\Users\atomy\Downloads\DUONIX-LC01-OFFICIAL-BUILD-A3-CPU-SPEED-SLIDER-DIRECTION-FIX`
 - state: **PRESENT / non-empty / historical pre-launch BLOCKED evidence**
 
-R3 source semantics directly confirm:
-- non-empty existing BuildRoot blocks a new R3 run at `PREPARE_BUILD_ROOT`,
-- Attempt-3 reservation is created only later at `OFFICIAL_BUILD_ATTEMPT_RESERVE`,
-- the current block occurred before reservation and before the only Official Build launch site.
+R3 fresh-workspace guard blocks any rerun while this exact non-empty BuildRoot exists. The directory must not be deleted or modified until Control Tower separately disposes/preserves it.
 
-Therefore the current BuildRoot must not be deleted or modified until its evidence has been preserved and Control Tower explicitly disposes that workspace.
-
-## 7. Current Blocker
+## 7. Blocker Disposition
 
 `LC-01-A3-TOOLCHAIN-D-MISSING-01`
 
-Classification:
-- `PRE-LAUNCH INFRASTRUCTURE / REQUIRED FROZEN TOOLCHAIN INPUT MISSING`
+Refined classification:
+- `PRE-LAUNCH INPUT PLACEMENT MISMATCH`
 - Candidate defect: **NO EVIDENCE**
-- R3 parser/transport defect: **NO — transport now proven operational**
-- Toolchain D artifact defect: **NOT ESTABLISHED; artifact itself was not present for verification**
-- Official Build failure: **NO — build was never launched**
-- Attempt-3 consumption event: **NO**
+- Toolchain D content defect: **NO — exact authority artifact was located and SHA/bytes match**
+- R3 defect: **NO EVIDENCE**
+- Official Build failure: **NO — Official Build never launched**
+- Attempt-3 consumption: **NO**
 
-Required exact missing input:
-- `C:\Users\atomy\Downloads\duonix-app-lc-01-toolchain-win-x64-node24.18.0-npm11.16.0.zip`
-- expected bytes: `51,403,257`
-- expected SHA-256: `9e13ed3129cae04692143d4b07419cc98c1f2fc2561d72895c8135eb2abd86ec`
-
-Historical project evidence shows this exact Toolchain D was previously produced and validated, but the binary artifact is not currently available to Control Tower and is absent from the required Windows Downloads path.
+The required frozen Toolchain D exists, but it is stored under the historical R8 artifact directory instead of the direct Downloads path hard-bound by R3.
 
 ## 8. Control Tower Disposition
 
 - **Do not rerun R3.**
-- Do not delete or modify the current BuildRoot.
-- Do not manually create Attempt-3 reservation/launched markers.
-- Do not start another Official Build attempt.
-- Do not substitute host Node/npm or a different Toolchain archive.
+- Do not delete or modify the current Attempt-3 BuildRoot.
+- Do not manually create Attempt-3 markers.
+- Do not move/delete/modify the historical Toolchain D authority artifact.
+- A byte-for-byte **copy** of the exact verified Toolchain D to R3's expected direct Downloads path is authorized as the next preparation step only.
+- No Build execution is authorized in the same step.
 - Galaxy Validation / Official Frozen Dist promotion / LC01-MOB-06+ / LC-02 remain unauthorized.
-- No application-source modification is authorized.
 
-Major work unit count remains **4** because the Attempt-3 Official Build cycle has not launched or reached independent post-build validation/disposition.
+Major work unit count remains **4**.
 
 ## 9. Next Single Action
 
-**Locate the exact frozen Toolchain D ZIP on the Windows PC without moving, modifying, extracting, or executing it. Report every matching path with file byte size and SHA-256. Do not touch the current Attempt-3 BuildRoot and do not rerun R3.**
+**Copy, without moving or altering the historical original, the exact verified Toolchain D ZIP from the R8 artifact directory to `C:\Users\atomy\Downloads\duonix-app-lc-01-toolchain-win-x64-node24.18.0-npm11.16.0.zip`, then verify the destination bytes and SHA-256 exactly match authority. Do not touch the current Attempt-3 BuildRoot and do not execute R3.**
