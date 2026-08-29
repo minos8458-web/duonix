@@ -16,7 +16,7 @@ Completed major work units:
 
 Rotation band: **CONTINUE**
 
-The Official Build Attempt 3 cycle remains open. The prior controlled R3 run was blocked before reservation/build launch because Toolchain D was absent from R3's exact expected path. That exact Toolchain D has now been copied to the required path with identity preserved. Attempt 3 remains unconsumed.
+The Official Build Attempt 3 cycle remains open. The prior R3 run was blocked before reservation/build launch by Toolchain D placement. The exact Toolchain D is now at R3's required path and the historical blocked BuildRoot has been preserved under a distinct archive path, restoring the fresh-workspace precondition. Attempt 3 remains unconsumed.
 
 ## 2. Baseline
 
@@ -40,12 +40,10 @@ Toolchain D authority:
 Historical original preserved at:
 - `C:\Users\atomy\Downloads\DUONIX-LC01-HG-FREEZE-R8\artifacts\duonix-app-lc-01-toolchain-win-x64-node24.18.0-npm11.16.0.zip`
 
-R3 expected direct-path copy now present at:
+R3 required direct-path copy present at:
 - `C:\Users\atomy\Downloads\duonix-app-lc-01-toolchain-win-x64-node24.18.0-npm11.16.0.zip`
-- destination bytes: `51,403,257`
-- destination SHA-256: `9e13ed3129cae04692143d4b07419cc98c1f2fc2561d72895c8135eb2abd86ec`
-- `IDENTITY_MATCH=True`
-- historical original preserved: `TRUE`
+- verified bytes/SHA exactly match authority
+- historical original preserved
 
 GitHub operations repository:
 - `minos8458-web/duonix`
@@ -71,75 +69,88 @@ Current gates:
 - lines: `2709`
 - independent pre-execution Validation: `FINAL PASS / blockers 0`
 - `Zone.Identifier`: removed by `Unblock-File`
-- exact default-stream SHA/bytes/lines remained unchanged after normalization.
+- exact default-stream SHA/bytes/lines remained unchanged after normalization
 
-## 5. Controlled R3 Pre-Launch Block Evidence
+Historical R1/R2 remain non-authoritative for execution.
 
-The controlled R3 run reached:
-- runner initialization with lifetime invocation count `2`,
-- `SOURCE_AUTHORITY_VERIFY = PASS`.
+## 5. Prior Controlled R3 Pre-Launch Block
 
 Directly inspected transfer ZIP:
 - `DUONIX-LC01-A3-RESULT-TRANSFER-DIAG-20260829-193458.zip`
 - SHA-256: `dde0459845088dba62421120d178e303d179c7ea5932e1e1d14302b85fe63c04`
 - status: `BLOCKED`
 - stage: `TOOLCHAIN_D_AUTHORITY_VERIFY`
-- reason: exact frozen Toolchain D ZIP absent from direct Downloads path at that time.
+- reason: frozen Toolchain D ZIP absent from R3's direct Downloads path at that time
 - official_build_lifetime_invocation_count: `2`
 - official_build_exit_code: `null`
-- npm dependency provisioning invocations: `0`
-- direct Vite production build invocations: `0`
-- Galaxy Validation: `false`
+- reservation marker: ABSENT
+- launched marker: ABSENT
+- Official Build process: NOT LAUNCHED
+- Attempt 3: NOT CONSUMED
 
-Persistent Attempt-3 authorities after that block:
-- reservation marker: **ABSENT**
-- launched marker: **ABSENT**
-- provenance candidate: **ABSENT**
-- freeze candidate: **ABSENT**
+## 6. Blocked Workspace Preservation
 
-Therefore:
-- R3 top-level runner: **EXECUTED THROUGH PRE-LAUNCH PATH**
-- Official Build process: **NOT LAUNCHED**
-- Attempt 3: **NOT CONSUMED**
-- lifetime Official Build invocation count: **2**
-
-## 6. Current Workspace State
-
-Existing blocked BuildRoot:
+Former exact BuildRoot:
 - `C:\Users\atomy\Downloads\DUONIX-LC01-OFFICIAL-BUILD-A3-CPU-SPEED-SLIDER-DIRECTION-FIX`
-- state: **PRESENT / non-empty / historical pre-launch BLOCKED workspace**
 
-Its evidence has been preserved in the directly inspected diagnostic transfer ZIP above. The exact BuildRoot must be absent before a new R3 run because R3 enforces a fresh-workspace guard.
+Historical archive path after whole-directory move:
+- `C:\Users\atomy\Downloads\DUONIX-LC01-OFFICIAL-BUILD-A3-CPU-SPEED-SLIDER-DIRECTION-FIX-BLOCKED-TOOLCHAIN-D-MISSING-20260829T103207Z`
 
-Control Tower will preserve this workspace by **renaming/moving the whole directory to a distinct historical archive name**, rather than deleting it. No files inside are to be edited.
+Direct verification after move:
+- original exact BuildRoot exists: `False`
+- archive BuildRoot exists: `True`
+- archived status JSON SHA-256 before move: `564c1ac43b70672e76b485077d788b088d4a0c1be557414db1dc62adefcffa5a`
+- archived status JSON SHA-256 after move: `564c1ac43b70672e76b485077d788b088d4a0c1be557414db1dc62adefcffa5a`
+- status identity unchanged: `True`
+- R3 execution during archive operation: `0`
+
+Therefore historical BLOCKED evidence is preserved and the exact R3 BuildRoot path is fresh again.
 
 ## 7. Blocker Disposition
 
 `LC-01-A3-TOOLCHAIN-D-MISSING-01`
 
-Status: **INPUT PLACEMENT CORRECTED; BUILDROOT FRESHNESS CLEANUP PENDING**.
+Status: **CLOSED AS PRE-LAUNCH INPUT-PLACEMENT BLOCKER**.
 
-Classification:
-- Candidate defect: **NO EVIDENCE**
-- Toolchain D content defect: **NO**
-- R3 defect: **NO EVIDENCE**
-- Official Build failure: **NO — Official Build never launched**
-- Attempt-3 consumption: **NO**
+Evidence:
+- exact Toolchain D authority exists and matches approved bytes/SHA,
+- exact authority copy is now at R3's hard-bound Downloads path,
+- historical blocked workspace/evidence is preserved,
+- exact live BuildRoot path is absent,
+- Attempt-3 reservation/launched markers remain absent,
+- lifetime Official Build invocation count remains `2`.
 
-The exact Toolchain D authority is now available at the hard-bound path required by R3.
+No Candidate defect, Toolchain content defect, or Official Build failure was established by this blocker.
 
-## 8. Control Tower Disposition
+## 8. Control Tower Authorization
 
-- **Do not execute R3 yet.**
-- Do not manually create Attempt-3 markers.
-- Do not modify files inside the existing blocked BuildRoot.
-- Do not delete the blocked BuildRoot; preserve it by whole-directory rename only.
-- Do not alter or remove either Toolchain D copy.
-- No Build execution is authorized in the archive step.
-- Galaxy Validation / Official Frozen Dist promotion / LC01-MOB-06+ / LC-02 remain unauthorized.
+Control Tower authorizes **exactly one new invocation of the exact R3 runner** to continue the still-unconsumed Official Build Attempt 3, using the already-proven Windows PowerShell child `-Command` transport.
 
-Major work unit count remains **4**.
+Mandatory immediate pre-launch guards:
+- exact R3 SHA/bytes/lines match authority,
+- R3 `Zone.Identifier` absent,
+- exact canonical source ZIP exists with approved SHA/bytes,
+- exact direct-path Toolchain D exists with approved SHA/bytes,
+- Attempt-3 reservation marker absent,
+- Attempt-3 launched marker absent,
+- exact live Attempt-3 BuildRoot absent,
+- historical blocked archive path present.
+
+After this authorized invocation is issued, **no additional R3 invocation is authorized regardless of exit code or visible output** until persistent markers/evidence are recovered and Control Tower disposes the result.
+
+Still unauthorized:
+- R1/R2 execution,
+- manual marker creation,
+- automatic retry,
+- deletion/modification of the historical blocked archive,
+- Galaxy Validation,
+- Official Frozen Dist promotion,
+- LC01-MOB-06+ progression,
+- LC-02 activation,
+- application-source modification.
+
+Major work unit count remains **4** until the Attempt-3 build/evidence cycle reaches independent validation and Control Tower disposition.
 
 ## 9. Next Single Action
 
-**Rename the complete existing blocked BuildRoot to a distinct historical archive directory, without modifying its contents; then verify the original exact BuildRoot path is absent and the archive path is present. Do not execute R3 in the same step.**
+**Run the exact guarded R3 invocation once through child `-Command`, then return the complete terminal output. Do not rerun R3 under any outcome.**
