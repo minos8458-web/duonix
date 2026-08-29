@@ -16,7 +16,7 @@ Completed major work units:
 
 Rotation band: **CONTINUE**
 
-The Official Build Attempt 3 execution cycle has not yet started because the Build/Release chat session cannot directly operate the approved Windows PC. This does not count as another completed major work unit.
+The Official Build Attempt 3 execution cycle is now in evidence-recovery / post-build-validation phase. It is not counted as another completed major work unit until the generated evidence/artifact package is independently validated and Control Tower disposes the build result.
 
 ## 2. Baseline
 
@@ -67,13 +67,13 @@ Historical R2 runner:
 - SHA-256: `cd5c740fbe9b4d759a502b07747f5a542e01ff3effbce71e3f24c570944163d2`
 - status: historical failed-preexecution artifact; NOT AUTHORIZED
 
-Current exact R3 runner:
+Executed exact R3 runner:
 - filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R3.ps1`
 - SHA-256: `8f6d67ce4af29a2812c2a181bb712edf57940e450dd8a70c30a9a1d6a8dfda07`
 - bytes: `138535`
 - lines: `2709`
 
-No.4 rechecked the user-supplied exact R3 artifact after execution instructions were returned; identity still matches the approved authority exactly.
+The user executed the previously approved one-line Windows PowerShell 5.1 wrapper. That wrapper revalidated the exact R3 filename/SHA/bytes/lines immediately before launching the child runner.
 
 ## 5. Latest Independent Validation
 
@@ -90,41 +90,50 @@ R3 Pre-Execution Runner Artifact Validation:
 
 All four original runner blockers are independently CLOSED.
 
+Post-build independent evidence validation:
+- **NOT YET EXECUTED**
+
 ## 6. Build / Release State
 
-Official Build lifetime invocation count: **2**  
-Attempt 3: **AUTHORIZED BUT NOT YET EXECUTED**  
-R1 runner execution: **0**  
-R2 runner execution: **0**  
-R3 runner execution: **0**  
-Attempt-3 reservation: **NOT YET CREATED**  
-Attempt-3 launch marker: **NOT YET CREATED**  
-Attempt-3 freeze candidate: **NOT YET CREATED**  
-Galaxy Validation: **NOT EXECUTED**
+User-returned Windows terminal evidence:
+- approved one-line wrapper executed once,
+- wrapper-side R3 filename/SHA/bytes/lines checks necessarily passed before child launch,
+- `DUONIX_R3_CHILD_EXITCODE=0`.
 
-Build/Release session limitation:
-- it cannot directly operate the approved Windows PC,
-- it correctly refused Linux/sandbox substitution,
-- it returned the exact Windows file placement requirements and one-time PowerShell 5.1 launch command,
-- no attempt has been consumed by this limitation.
+Control Tower interpretation of the exact R3 runner semantics:
+- the child R3 runner actually executed,
+- exact R3 `exit 0` is reachable only after the Official Build process has launched and the runner has passed its build, semantic audit, deterministic freeze-candidate, immutability, and provenance gates,
+- therefore Official Build Attempt 3 is **LAUNCHED / CONSUMED**,
+- Official Build lifetime invocation count is **3**,
+- R3 MUST NOT be executed again.
+
+Runner self-result implied by child exit 0:
+- Official Build Attempt 3 runner path: **PASS**,
+- deterministic freeze candidate should have been generated,
+- `official_frozen_dist` remains `false` by runner contract.
+
+Still pending direct evidence recovery:
+- exact Attempt-3 reservation/launched marker contents and identities,
+- exact status JSON,
+- exact build stdout/stderr evidence,
+- exact freeze-candidate filename/SHA-256/bytes,
+- exact raw-dist manifest and semantic-network-audit identities,
+- exact build provenance identity,
+- independent post-build validation.
+
+Galaxy Validation: **NOT EXECUTED**.
 
 ## 7. Control Tower Disposition
 
-Control Tower preserves the existing one-time authorization for exact R3 only.
+Official Build Attempt 3 has been consumed and **NO RETRY IS AUTHORIZED**.
 
-No new authorization is required before the user's first exact Windows execution, provided all runner pre-launch guards pass.
-
-Execution requirements:
-- required files are placed in `$HOME\Downloads` with exact filenames,
-- exact R3 identity must pass before child execution,
-- Attempt-3 reservation and launched markers must not pre-exist,
-- the Attempt-3 build-owned root must not pre-exist in a nonempty state,
-- the one approved Windows PowerShell 5.1 command is executed exactly once,
-- if the Official Build process launches, lifetime invocation count becomes 3 and Attempt 3 is consumed regardless of later outcome,
-- no automatic/manual retry is authorized.
+The terminal child exit code 0 is accepted as strong evidence that the exact R3 runner reached its PASS path, but Control Tower does not yet declare the generated freeze candidate independently validated or officially frozen.
 
 Still unauthorized:
-- second R3 execution,
+- any R3 rerun,
+- any additional Official Build attempt,
+- deleting or replacing Attempt-3 reservation/launched markers,
+- modifying the Attempt-3 build/evidence/artifact directories,
 - Galaxy Validation,
 - Official Frozen Dist promotion,
 - LC01-MOB-06+ progression,
@@ -134,4 +143,4 @@ Still unauthorized:
 
 ## 8. Next Single Action
 
-**On the approved Windows PC, place the exact required Attempt-3 inputs in `$HOME\Downloads`, confirm the Attempt-3 reservation/launched markers and nonempty build-owned root are absent, then execute the approved one-line Windows PowerShell 5.1 command exactly once. Return the complete stdout/stderr, `DUONIX_R3_CHILD_EXITCODE`, and generated Attempt-3 evidence/artifact results to `[DUONIX] 80 Build / Release`; do not rerun R3.**
+**Without rerunning R3, collect the Attempt-3 `evidence`, `logs`, `artifacts`, exact R3 runner, and persistent Attempt-3 reservation/launched markers into one transfer ZIP from the Windows PC. Return that ZIP to Control Tower for direct receipt and independent post-build Validation.**
