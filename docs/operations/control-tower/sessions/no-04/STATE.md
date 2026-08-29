@@ -11,11 +11,11 @@ Completed major work units:
 
 1. No.3 state recovery and reconstructed baseline disposition.
 2. Attempt-3 runner provenance and exact artifact recovery disposition.
-3. Attempt-3 Pre-Execution Runner Artifact Validation disposition — FAIL/HOLD with four runner-level blockers.
+3. Attempt-3 Pre-Execution Runner Artifact Validation disposition — initial FAIL/HOLD with four runner-level blockers.
 
 Rotation band: **CONTINUE**
 
-R2 preparation alone is not counted as a completed major work unit. The remediation loop closes only after independent R2 Validation and Control Tower disposition.
+The Attempt-3 runner remediation loop remains open. R2 independent Validation reduced the open blockers from four to one, but the loop is not counted as a new completed major work unit until a corrected runner passes independent pre-execution validation and Control Tower disposes the result.
 
 ## 2. Baseline
 
@@ -59,64 +59,83 @@ Current gate state:
 - CPU Speed Slider Direction Fix: `SOURCE CHANGE FINAL APPROVED / CLOSED` by No.4 based on recovered Architecture + independent Validation evidence.
 - R5 independent dynamic validation: `FINAL PASS / blockers 0`; do not rerun R5.
 - Original Attempt-3 runner provenance recovered from the sole `[DUONIX] 80 Build / Release` session.
-- Exact original Attempt-3 runner identity verified:
+- Historical R1 runner:
   - filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS.ps1`
   - SHA-256: `40cdcc80031dd7bf130f8e7a60f152a36dc74f7fdbc290c4e94f7052112fc2d9`
   - bytes: `135407`
   - lines: `2638`
-- Previous artifact-receipt blocker `LC-01-A3-IV-RUNNER-ARTIFACT-MISSING-01`: RESOLVED / CLOSED at receipt level.
-- `[DUONIX] 80 Build / Release` completed the authorized R2 PREPARATION ONLY task and returned a new runner artifact.
-- No.4 directly recomputed the R2 artifact identity and confirmed the reported values:
+- R2 runner:
   - filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R2.ps1`
   - SHA-256: `cd5c740fbe9b4d759a502b07747f5a542e01ff3effbce71e3f24c570944163d2`
   - bytes: `138460`
   - lines: `2707`
-- No.4 read-only spot-check confirmed the reported blocker-related code structures are present, including exact W3C `-ceq` comparison, no `return $null` in the local HTML resolver, all-text-bearing protocol-relative scan evidence, complete explicit build-owned path binding, exactly one Official Build launch site, and exactly one expected-37 probe launch site.
+- R2 independent Validation directly recomputed the exact R2 identity: PASS.
+- R1 → R2 independent differential recomputation: PASS / EXECUTED.
+  - 11 hunks
+  - +90 / -21
+  - 36 functions in each version
+  - 34/36 functions byte-text unchanged
+  - changed functions: `Resolve-LocalHtmlResourcePath`, `Invoke-SemanticDistNetworkAudit`
+- Three prior R1 blockers are independently CLOSED:
+  1. `LC-01-A3-IV-W3C-NAMESPACE-PREFIX-ALLOWLIST-01`
+  2. `LC-01-A3-IV-PROTOCOL-RELATIVE-SCAN-SCOPE-01`
+  3. `LC-01-A3-IV-BUILD-WORKSPACE-LEAK-SCOPE-01`
+- Previous PASS areas were independently rechecked and preserved, including canonical source binding, fresh Attempt-3 workspace design, Toolchain D/shadow topology, Official Build invocation authority, deterministic freeze design, source/Toolchain immutability, and prohibited-action static audit.
 
 ## 5. Open / HOLD
 
-R1 independent Pre-Execution Runner Artifact Validation result remains the last independent verdict:
+Latest independent R2 Pre-Execution Runner Artifact Validation:
 - `FAIL / HOLD`
-- blockers: `4`
+- blocker count: `1`
 
-R2 claims fixes for all four blockers, but none are closed until independent Validation confirms them:
+Open blocker:
 
-1. `LC-01-A3-IV-W3C-NAMESPACE-PREFIX-ALLOWLIST-01`
-   - R2 claimed fix: exact case-sensitive W3C namespace authority equality.
-   - status: `PENDING INDEPENDENT R2 VALIDATION`.
-2. `LC-01-A3-IV-HTML-RUNTIME-RESOURCE-NONLOCAL-BYPASS-01`
-   - R2 claimed fix: fail-closed runtime src/href resolver with unconditional emitted-dist existence gate.
-   - status: `PENDING INDEPENDENT R2 VALIDATION`.
-3. `LC-01-A3-IV-PROTOCOL-RELATIVE-SCAN-SCOPE-01`
-   - R2 claimed fix: all text-bearing production output including JS/MJS.
-   - status: `PENDING INDEPENDENT R2 VALIDATION`.
-4. `LC-01-A3-IV-BUILD-WORKSPACE-LEAK-SCOPE-01`
-   - R2 claimed fix: full Attempt-3 build root plus explicit build-owned path authorities.
-   - status: `PENDING INDEPENDENT R2 VALIDATION`.
+`LC-01-A3-IV-HTML-RUNTIME-RESOURCE-NONLOCAL-BYPASS-01`
 
-Classification remains:
-- `VALIDATION-INFRA / PRE-EXECUTION RUNNER DEFECTS` until independently revalidated.
-- NOT Candidate product defects.
+Exact remaining defect:
+- `Resolve-LocalHtmlResourcePath` still normalizes leading current-directory segments instead of rejecting them fail-closed.
+- R2 behavior:
+  - `while ($cut.StartsWith('./')) { $cut = $cut.Substring(2) }`
+- Counterexample:
+  - `./assets/index.js`
+  - becomes `assets/index.js`
+  - may then pass emitted-dist existence validation.
+- Required behavior:
+  - leading `./` current-directory segments must be rejected, not normalized into an accepted resource path.
+
+Classification:
+- `VALIDATION-INFRA / PRE-EXECUTION RUNNER DEFECT`
+- NOT Candidate product defect.
 - NOT evidence of CPU Speed Slider Direction Fix failure.
 - NOT Toolchain D corruption.
 - NOT an Official Build Attempt 3 failure because Attempt 3 has not run.
 
 ## 6. Latest Independent Validation
 
-Latest independent verdict remains R1 runner gate:
+Result:
 - `PRE-EXECUTION RUNNER ARTIFACT VALIDATION = FAIL / HOLD`
-- blockers: `4`
+- blockers: `1`
 
-R2 independent validation:
-- `NOT YET EXECUTED`
+Previous four blocker dispositions:
+1. W3C namespace exact authority: `CLOSED`
+2. HTML runtime resource nonlocal/current-directory bypass: `OPEN`
+3. Protocol-relative scan scope: `CLOSED`
+4. Complete build-workspace leak scope: `CLOSED`
 
-Windows PowerShell parser for R2:
-- `NOT EXECUTED` in the Build/Release preparation environment.
+R1 → R2 differential recomputation:
+- `PASS / EXECUTED`
+
+Prohibited-action static audit:
+- `PASS`
+
+Windows PowerShell parser:
+- `NOT EXECUTED`
 
 ## 7. Build / Release State
 
 Official Build lifetime invocation count: **2**  
 Attempt 3: **NOT EXECUTED / NOT AUTHORIZED**  
+R1 runner execution: **0**  
 R2 runner execution: **0**  
 Reservation marker creation: **NOT AUTHORIZED**  
 Launch marker creation: **NOT AUTHORIZED**  
@@ -127,16 +146,22 @@ Historical frozen-dist candidate is not authoritative for the current post-slide
 
 ## 8. Current Control Tower Approval
 
-R2 PREPARATION ONLY is complete.
+Control Tower accepts the R2 independent Validation result.
 
-The new R2 runner is **NOT AUTHORIZED FOR EXECUTION**.
+R2 is **NOT AUTHORIZED FOR EXECUTION**.
 
-Control Tower authorizes only the next independent gate:
-- `[DUONIX] 70 Validation / Integration`
-- `LC-01 OFFICIAL BUILD ATTEMPT 3 — R2 PRE-EXECUTION RUNNER ARTIFACT VALIDATION`
+`[DUONIX] 80 Build / Release` is authorized for **R3 RUNNER PREPARATION ONLY**.
+
+Recommended new filename:
+- `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R3.ps1`
+
+Allowed scope:
+- correct exactly the one remaining HTML runtime resource blocker by rejecting leading `./` current-directory segments fail-closed,
+- preserve all independently CLOSED blockers and previous PASS areas,
+- create a new immutable runner artifact with a new identity.
 
 Explicitly not authorized:
-- R2 runner execution,
+- R1/R2/R3 runner execution,
 - Official Build Attempt 3,
 - reservation creation,
 - launched-marker creation,
@@ -150,4 +175,4 @@ Explicitly not authorized:
 
 ## 9. Next Single Action
 
-**Provide the exact R2 runner artifact to `[DUONIX] 70 Validation / Integration` and perform a fresh independent R2 Pre-Execution Runner Artifact Gate. Do not execute the runner or Official Build Attempt 3.**
+**Send the R3 RUNNER PREPARATION ONLY instruction to `[DUONIX] 80 Build / Release` to reject leading `./` current-directory segments fail-closed while preserving every independently CLOSED/PASS area. Return a new immutable R3 artifact and stop before execution.**
