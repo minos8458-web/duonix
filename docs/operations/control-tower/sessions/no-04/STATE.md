@@ -88,63 +88,66 @@ Do not manually create markers or BuildRoot.
 
 ## 6. Windows Invocation Transport Diagnostics
 
-### Diagnostic 1
-
 Confirmed:
 - exact R3 SHA/bytes/lines match authority,
 - Windows PowerShell parser error count for R3 = `0`,
 - R3 main `try` AST exists,
-- child PowerShell `-Command` probe executed and propagated exit `23`.
+- child PowerShell `-Command` probe executes and propagates exact exit `23`,
+- disposable local child `-File` probe executes, emits sentinel, and propagates exact exit `37`,
+- therefore generic Windows PowerShell child `-File` transport is working.
 
-The diagnostic itself then failed due to a Control Tower-authored empty-stderr `.Trim()` bug. This failure did not execute R3.
+Exact child execution-policy scopes when launched with `-ExecutionPolicy Bypass`:
+- MachinePolicy = Undefined
+- UserPolicy = Undefined
+- Process = Bypass
+- CurrentUser = Undefined
+- LocalMachine = Undefined
+- Effective = Bypass
 
-### Diagnostic 2 — File transport probe V2
-
-Confirmed:
-- exact R3 identity: PASS
-- `R3_PARSE_ERROR_COUNT=0`
-- disposable local child `-File` probe emitted sentinel `DUONIX_CHILD_FILE_PROBE_OK`
-- disposable local child `-File` probe propagated exact exit `37`
-- `TRANSPORT_PROBE=PASS`
-- `TRANSPORT_PROBE_EXITCODE=0`
-- `R3_EXECUTION=0`
-
-Therefore generic Windows PowerShell child `-File` transport is **working correctly**.
-
-R3 NTFS streams observed:
+Exact R3 NTFS streams:
 - `:$DATA` length `138535`
 - `RVContext` length `60`
 - `Zone.Identifier` length `328`
 
-The disposable local probe did not establish the same downloaded-file ADS context.
+Exact `Zone.Identifier` content confirms Internet-zone transport metadata:
+- `[ZoneTransfer]`
+- `ZoneId=3`
+- ReferrerUrl = ChatGPT conversation URL
+- HostUrl = ChatGPT file-download URL
+
+Authenticode:
+- status = `NotSigned`
+- PowerShell status message states the downloaded script is not digitally signed and cannot execute under the current system context.
+
+Microsoft documentation confirms that Internet-downloaded scripts may carry `Zone.Identifier`, and `Unblock-File` removes that alternate data stream without changing the script's execution policy. The exact R3 main data-stream SHA/bytes/lines remain the artifact authority.
 
 ## 7. Current Blocker
 
 `LC-01-A3-WIN-INVOCATION-TRANSPORT-01`
 
 Refined classification:
-- `WINDOWS DOWNLOADED-SCRIPT EXECUTION CONTEXT / EXECUTION-POLICY-OR-ADS DIAGNOSIS`
+- `WINDOWS DOWNLOADED-SCRIPT / MARK-OF-THE-WEB EXECUTION CONTEXT`
 - NOT Candidate defect
 - NOT Toolchain D defect
 - NOT R3 parser defect
 - NOT generic child `-File` transport defect
 - NOT Official Build failure because Official Build never launched
 
-Known differential:
-- R3 has `Zone.Identifier` and `RVContext` alternate data streams.
-- harmless disposable local `-File` probe runs correctly.
+Strongest current hypothesis:
+- the downloaded R3's `Zone.Identifier (ZoneId=3)` / downloaded-script trust context is the differentiator between R3 and the successful disposable local `-File` probe.
 
-Root cause: **미확인** until effective child execution policy and exact ADS contents are read.
+Root cause status:
+- **strongly indicated but not yet proven by an execution after transport normalization**.
 
 ## 8. Control Tower Disposition
 
 - Exact R3 remains the independently validated runner authority.
-- Attempt 3 remains available in principle because no reservation or launch marker exists.
-- **Do not execute R3 again yet.**
-- Do not modify R3 main data stream.
-- Do not remove or alter alternate data streams until Control Tower has recorded their contents and effective policy.
+- Attempt 3 remains available because no reservation or launch marker exists.
+- Do not modify the R3 main data stream.
+- Do not create Attempt-3 markers or BuildRoot manually.
+- Do not execute R3 until Control Tower authorizes transport-metadata normalization.
 - Galaxy Validation / Official Frozen Dist promotion / LC01-MOB-06+ / LC-02 remain unauthorized.
 
 ## 9. Next Single Action
 
-**Read only the child Windows PowerShell effective execution-policy scopes, the exact R3 `Zone.Identifier` and `RVContext` alternate-data-stream contents, and R3 Authenticode status. Do not execute or unblock R3. Return the output to Control Tower for the one-time Attempt-3 execution-mechanism decision.**
+**Normalize only the exact R3 local Windows transport metadata by removing `Zone.Identifier` with `Unblock-File`, then immediately verify that the R3 default-stream SHA-256 / bytes / lines are unchanged and `Zone.Identifier` is absent. Do not execute R3 in the same step. Return the verification output to Control Tower.**
