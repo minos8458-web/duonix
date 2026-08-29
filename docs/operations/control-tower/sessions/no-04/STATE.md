@@ -5,7 +5,7 @@ Status: ACTIVE
 
 ## 1. Major Work Unit Count
 
-Current count: **4**
+Current count: **5**
 
 Completed major work units:
 
@@ -13,10 +13,9 @@ Completed major work units:
 2. Attempt-3 runner provenance and exact artifact recovery disposition.
 3. Attempt-3 initial Pre-Execution Runner Artifact Validation disposition — FAIL/HOLD with four runner-level blockers.
 4. Attempt-3 runner remediation loop — R2 reduced blockers to one; R3 independently validated `FINAL PASS / blockers 0`; Control Tower closed the remediation loop.
+5. Attempt-3 Official Build / post-build evidence cycle — Official Build executed and consumed successfully; independent post-build Validation completed `FINAL FAIL / blocker 1`; Control Tower disposition = HOLD for executing-runner identity provenance remediation only.
 
 Rotation band: **CONTINUE**
-
-Official Build Attempt 3 has executed and is consumed. Control Tower has now directly received and consistency-checked the successful post-build evidence/artifact transfer package. The Attempt-3 cycle remains open until independent `[DUONIX] 70 Validation / Integration` post-build validation and subsequent Control Tower disposition.
 
 ## 2. Baseline
 
@@ -56,121 +55,96 @@ Current gates:
 - bytes: `138535`
 - lines: `2709`
 - independent pre-execution Validation: `FINAL PASS / blockers 0`
-- `Zone.Identifier` was removed by `Unblock-File`; default-stream SHA/bytes/lines remained unchanged.
+- `Zone.Identifier` removed before the successful controlled invocation; default-stream SHA/bytes/lines remained unchanged.
 
 Historical R1/R2 remain non-authoritative for execution.
 
-Note for independent post-build review: the exact R3 script still sets internal `$RunnerRevision = OBR-A3-CPU-SPEED-SLIDER-DIRECTION-FIX-R2`; determine independently whether this is metadata-only or a validation concern. Do not infer failure solely from the label.
+Known metadata discrepancy:
+- exact R3 source contains `$RunnerRevision = 'OBR-A3-CPU-SPEED-SLIDER-DIRECTION-FIX-R2'`.
+- generated status therefore records runner revision `...R2`.
 
-## 5. Historical Pre-Launch Block
+## 5. Official Build Attempt 3
 
-The earlier Toolchain-D-placement blocker is preserved as historical evidence. It was a pre-launch placement mismatch, not an Official Build invocation. Its blocked workspace was moved whole to a distinct archive before the final invocation. Attempt 3 remained unconsumed at that time.
+Final guarded invocation passed exact R3/source/toolchain/marker/workspace preconditions.
 
-Blocker `LC-01-A3-TOOLCHAIN-D-MISSING-01`: **CLOSED**.
-
-## 6. Official Build Attempt 3 — EXECUTED / CONSUMED
-
-Final guarded invocation passed the approved R3/source/toolchain/marker/workspace preconditions.
-
-Persistent authorities and direct output establish:
+Persistent authorities establish:
 - Attempt-3 reservation marker: PRESENT
 - Attempt-3 launch marker: PRESENT
 - Official Build command: `npm run build`
-- canonical package build script: `node scripts/build.mjs`
-- process exit code: `0`
+- package build script: `node scripts/build.mjs`
+- Official Build exit code: `0`
 - retry performed: `false`
-- Official Build lifetime invocation count: `3`
+- Official Build lifetime invocation count: **3**
 - runner self-result: `PASS`
-- automatic retry: NOT AUTHORIZED
 - R3 MUST NOT be run again.
 
-Build stdout records Vite `6.4.3`, `137 modules transformed`, and success sentinel `build: vite` exactly once.
-Build stderr is empty.
-
-## 7. Successful Post-Build Transfer Receipt
-
-Transfer package directly received and inspected by Control Tower:
+Successful transfer package:
 - filename: `DUONIX-LC01-A3-RESULT-TRANSFER-DIAG-20260829-212230.zip`
 - SHA-256: `f2d13b31e9547489329f641874df42542d75294d378f23acdc8c7bd5d3c164dd`
 - bytes: `317,904`
-- ZIP entries: `42`
+- entries: `42`
 
-Key exact evidence identities:
-- status JSON SHA-256: `25b087a54bdd7aee3057ccf30c9ed7920bf29636141b8c1c5fd8289aebbe7076`
-- status: `PASS`
-- stage: `COMPLETE`
-- official build exit code: `0`
-- official build lifetime invocation count: `3`
-- provenance SHA-256: `91739e56c86d44cc22fb19eb72c8ef006eb219d214a8f0065932a8b2e12e007f`
-- raw-dist manifest artifact SHA-256: `9628d23ded84675d7aa5991baec2663c870dba9f0c7f60876c490f763a6092c7`
-- semantic-network-audit artifact SHA-256: `147c077909867187558857a380a35574597d7121072ded5c9bbd2e4edb82686b`
-- Attempt-3 result SHA-256: `f2205f72e783dfd646987d37144d2ef920bf002d626a3c505bcc2ca7af501515`
-- reservation marker SHA-256: `ddfc1196bc7d517980321d3140d19d26a7c675a45090362f36e9ecff0e6c1d58`
-- launch marker SHA-256: `bf963249960bc42c5b643de36af6c588084ab1079519a21953a8ffc3dc884643`
+## 6. Independent Post-Build Validation Result
 
-Control Tower consistency check found the status/result/provenance/markers mutually consistent with Attempt 3 launch, exit `0`, lifetime count `3`, no retry, and Toolchain-D-only binding.
+`[DUONIX] 70 Validation / Integration` independently inspected the transfer ZIP and returned:
 
-## 8. Raw Dist / Freeze Candidate Receipt
+- `POST-BUILD EVIDENCE / ARTIFACT VALIDATION = FINAL FAIL`
+- `BLOCKER COUNT = 1`
 
-Runner-produced raw dist manifest:
-- file count: `2`
-- manifest SHA-256: `c594618614d15ccdbcc62c7429dcc5312a75bdbc70b91849fec1e0c278dbe87e`
-- `assets/index-BZqr2gkq.js`: bytes `320,557`, SHA-256 `334d4027ba5c6680d6fd1972e665c5fc7ad717ce79e0b3ab43a293232f6ec73c`
-- `index.html`: bytes `19,608`, SHA-256 `98e5820154ab65ae05eafb5b6f6ee15d4a2f82afb84cfabd9248922e0c93d930`
+Independent PASS areas include:
+- transfer ZIP integrity / extraction
+- exact R3 artifact identity
+- Attempt marker chronology and lifetime accounting `2 -> 3`
+- build command/result/stdout/stderr consistency
+- evidence hash cross-links
+- freeze-candidate direct identity and extraction
+- raw-dist manifest digest reconstruction from the transferred runtime payload
+- direct production semantic-network inspection
+- source/toolchain immutability evidence cross-consistency
+- build-shadow/lifecycle/node-binding evidence
+- prohibited-action evidence consistency
 
-Freeze candidate:
-- filename: `duonix-app-lc-01-cpu-speed-slider-direction-fix-a3-dist-freeze-candidate.zip`
+Freeze candidate independently validated:
 - SHA-256: `829b43ca4dd58c23de4ddc64b3297c87d8c3be940b690d63850a95bf15dd89cc`
 - bytes: `79,435`
 - file count: `2`
-- `official_frozen_dist`: `false`
-
-Control Tower directly extracted the candidate from the transfer ZIP and independently recomputed both contained file SHA-256 values; they exactly match the raw-dist manifest. Both ZIP entries carry normalized `1980-01-01 00:00:00` timestamps.
-
-This is a **freeze candidate only**. It has not been promoted to Official Frozen Dist.
-
-## 9. Semantic / Immutability Self-Evidence Receipt
-
-Runner-produced semantic network audit reports `PASS` with:
-- external absolute URL count: `0`
-- protocol-relative external resource count: `0`
-- explicit runtime network API count: `0`
-- runtime fetch occurrences: `1`
-- classified Vite modulepreload polyfill fetch count: `1`
-- unclassified runtime fetch count: `0`
-- external runtime network dependency count: `0`
-- missing local runtime asset count: `0`
-- build-workspace path leak count: `0`
-- findings: empty.
-
-Post-build comparison evidence reports source and Toolchain D file/directory equality PASS. Build-shadow transient cleanup reports only `.vite-temp`, safely removed. Prohibited-action counters in provenance are all zero, including dependency install/CI, lock regeneration, direct Vite production build, automatic retry, LAN server, Galaxy Validation, and deploy.
-
-These are runner-generated/self-evidence and must be independently recomputed or checked by 70 Validation before final acceptance.
-
-## 10. Current Validation / Release State
-
-Control Tower direct receipt / cross-consistency check: **PASS — no contradiction found**.
-
-Independent `[DUONIX] 70 Validation / Integration` post-build evidence/artifact validation: **NOT YET EXECUTED**.
+- runtime payload identity / manifest / semantic-network gates: PASS
+- `official_frozen_dist = false`
 
 Galaxy Validation: **NOT EXECUTED**.
-Official Frozen Dist: **NOT PROMOTED / NOT DECLARED**.
-`LC01-MOB-06+`: **HOLD**.
-`LC-02`: **NOT ACTIVE**.
 
-Major work unit count remains **4** until independent post-build validation and Control Tower disposition close this Attempt-3 cycle.
+## 7. Active Validation Blocker
 
-## 11. Control Tower Disposition
+`LC-01-A3-POST-IV-EXECUTING-RUNNER-IDENTITY-BINDING-01`
 
-- R3 MUST NOT be run again.
-- Attempt 3 is consumed; lifetime count is `3`.
-- No retry or marker replacement is authorized.
-- Do not modify or delete the successful live Attempt-3 BuildRoot or historical blocked archive.
-- Do not promote the freeze candidate yet.
-- Do not claim `official_frozen_dist=true`.
-- Galaxy Validation remains unauthorized pending independent post-build validation.
-- No application-source modification is authorized.
+Classification: **POST-BUILD EVIDENCE / PROVENANCE BLOCKER**.
 
-## 12. Next Single Action
+Independent Validation basis:
+- exact transferred executable artifact is R3 with approved SHA.
+- internal `$RunnerRevision` and status `runner_revision` say `...R2`.
+- reservation/launch/result/provenance do not record the executing runner SHA-256 or exact runner path.
+- post-run diagnostic receipt proves exact R3 existed after the build, but does not by itself bind the consumed launch to exact R3.
+- actual production output does not exercise the R3-only leading-`./` resolver correction, so output behavior cannot distinguish historical R2 from R3.
 
-**Send `DUONIX-LC01-A3-RESULT-TRANSFER-DIAG-20260829-212230.zip` unchanged to `[DUONIX] 70 Validation / Integration` for independent post-build evidence/artifact validation. Validation must independently inspect/recompute the package, candidate, raw-dist identities, semantic-network assertions, source/toolchain immutability evidence, marker/build chronology, prohibited-action evidence, and the internal R3 revision-label discrepancy. Return a single FINAL PASS/FAIL disposition with blocker count and evidence. Do not run R3, do not run Galaxy Validation, and do not promote Official Frozen Dist.**
+This blocker is **not** a product defect, build-output defect, freeze-candidate content defect, or Toolchain D defect.
+
+## 8. Control Tower Disposition
+
+Independent Validation result is accepted as authoritative for the current gate:
+
+- Official Frozen Dist promotion: **HOLD**.
+- freeze candidate content: independently PASS, but not promoted.
+- `official_frozen_dist`: remains `false`.
+- Galaxy Validation: remains unauthorized / NOT EXECUTED.
+- `LC01-MOB-06+`: HOLD.
+- `LC-02`: inactive.
+- Official Build Attempt 3: consumed; lifetime count `3`.
+- **Do not rerun R3 or Official Build.**
+- no marker replacement or retrospective evidence modification is authorized.
+- no application-source modification is authorized.
+
+The next remediation is evidence-only. Control Tower will first attempt to recover independent Windows execution provenance for the already-completed Attempt-3 invocation; no rebuild is authorized.
+
+## 9. Next Single Action
+
+**Perform a read-only Windows provenance recovery for the already-completed Attempt-3 execution window, without executing R3 or modifying BuildRoot/markers. Inspect Windows PowerShell event logs (and optional process-creation logs if present) for an event that records the exact R3 script path / child `-Command` invocation around 2026-08-29 21:14–21:17 local time. Return the raw matching event data to Control Tower. If no suitable OS event exists, report that explicitly; do not create substitute historical evidence.**
