@@ -12,11 +12,11 @@ Completed major work units:
 1. No.3 state recovery and reconstructed baseline disposition.
 2. Attempt-3 runner provenance and exact artifact recovery disposition.
 3. Attempt-3 initial Pre-Execution Runner Artifact Validation disposition — FAIL/HOLD with four runner-level blockers.
-4. Attempt-3 runner remediation loop — R2 reduced blockers to one; R3 independently validated FINAL PASS / blockers 0; Control Tower closed the remediation loop.
+4. Attempt-3 runner remediation loop — R2 reduced blockers to one; R3 independently validated `FINAL PASS / blockers 0`; Control Tower closed the remediation loop.
 
 Rotation band: **CONTINUE**
 
-The Official Build Attempt 3 execution cycle remains open. A Windows wrapper invocation returned `DUONIX_R3_CHILD_EXITCODE=0`, but subsequent direct diagnostics proved that the R3 main body did not leave any required execution side effects. Therefore the wrapper exit code is not accepted as evidence that Attempt 3 executed.
+The Official Build Attempt 3 execution cycle remains open. No Official Build Attempt 3 reservation, launch marker, BuildRoot, evidence, log, artifact, or freeze-candidate output exists.
 
 ## 2. Baseline
 
@@ -38,117 +38,113 @@ Toolchain D:
 
 GitHub operations repository:
 - `minos8458-web/duonix`
-- operational documentation is stored here.
-- current LC-01 application source has not yet been migrated into this repository.
+- Control Tower operations documentation is stored here.
+- current LC-01 application source has **not yet been migrated into this repository**.
 
-Git base branch: `미확인` for the current LC-01 source artifact.  
-Git base commit: `미확인` for the current LC-01 source artifact.  
-Working branch: `미확인`.  
-Latest application-source commit: `미확인`.
+Git base branch / commit for current LC-01 application source artifact: `미확인`.  
+Working branch / latest application-source commit: `미확인`.
 
 ## 3. Active Milestone
 
 Milestone: `LC-01`  
 Status: `ACTIVE / NOT COMPLETE`
 
-Current gate state:
+Current gates:
 - `LC01-MOB-06+ = HOLD`
 - `LC-02 = NOT ACTIVE`
 
-## 4. Attempt-3 Runner Authority
+## 4. Exact R3 Runner Authority
 
-Historical R1 runner:
-- filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS.ps1`
-- SHA-256: `40cdcc80031dd7bf130f8e7a60f152a36dc74f7fdbc290c4e94f7052112fc2d9`
-- status: historical failed-preexecution artifact; NOT AUTHORIZED
-
-Historical R2 runner:
-- filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R2.ps1`
-- SHA-256: `cd5c740fbe9b4d759a502b07747f5a542e01ff3effbce71e3f24c570944163d2`
-- status: historical failed-preexecution artifact; NOT AUTHORIZED
-
-Current exact R3 runner:
 - filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R3.ps1`
 - SHA-256: `8f6d67ce4af29a2812c2a181bb712edf57940e450dd8a70c30a9a1d6a8dfda07`
 - bytes: `138535`
 - lines: `2709`
 - independent pre-execution Validation: `FINAL PASS / blockers 0`
 
-## 5. Windows Invocation Diagnostic Evidence
+Historical R1 and R2 runners remain non-authoritative for execution.
 
-User-executed approved wrapper output:
+## 5. Corrected Attempt-3 Execution State
+
+A previously approved Windows wrapper invocation returned:
 - `DUONIX_R3_CHILD_EXITCODE=0`
 
-Subsequent read-only diagnostic completed successfully and transfer ZIP was directly inspected by No.4:
-- transfer ZIP: `DUONIX-LC01-A3-RESULT-TRANSFER-DIAG-20260829-190702.zip`
-- SHA-256: `f2bcf917200467ea0ab7ab992e89ffd1e9aa412eba729ed8c355c705633f4160`
-- bytes: `33356`
+That output is **not accepted as evidence of R3 execution** because later read-only evidence recovery proved all mandatory R3 top-level side effects absent:
+- Attempt-3 reservation marker: ABSENT
+- Attempt-3 launched marker: ABSENT
+- Attempt-3 BuildRoot: ABSENT
+- Attempt-3 evidence/log/artifact directories: ABSENT
+- status JSON: ABSENT
+- provenance JSON: ABSENT
+- freeze candidate: ABSENT
 
-Direct diagnostic findings:
-- exact R3 runner exists and identity matches.
-- Attempt 1 reservation/launched markers exist.
-- Attempt 2 reservation/launched markers exist.
-- Attempt 3 reservation marker: **ABSENT**.
-- Attempt 3 launched marker: **ABSENT**.
-- exact Attempt-3 BuildRoot: **ABSENT**.
-- Attempt-3 evidence directory: **ABSENT**.
-- Attempt-3 logs directory: **ABSENT**.
-- Attempt-3 artifacts directory: **ABSENT**.
-- status JSON: **ABSENT**.
-- provenance JSON: **ABSENT**.
-- freeze candidate: **ABSENT**.
+Therefore:
+- Official Build Attempt 3: **NOT EXECUTED / NOT CONSUMED**
+- Official Build lifetime invocation count: **2**
+- Attempt-3 reservation: **NOT CREATED**
+- Attempt-3 launch marker: **NOT CREATED**
+- Galaxy Validation: **NOT EXECUTED**
 
-The transfer ZIP contains only:
-- the diagnostic receipt,
-- exact R3 runner,
-- Attempt 1 reservation/launched markers,
-- Attempt 2 reservation/launched markers.
+Do not manually create markers or BuildRoot.
 
-Control Tower conclusion:
-- the previous inference that child exit code 0 proved R3 PASS was invalid.
-- if the R3 top-level execution body had started, it would create the exact BuildRoot before source validation and later create a persistent Attempt-3 reservation before any Official Build launch.
-- neither persistent nor workspace side effect exists.
-- therefore there is no evidence that the R3 top-level build flow started, and strong evidence that it did not.
+## 6. Windows Invocation Transport Diagnostics
 
-## 6. Build / Release State — CORRECTED
+### Diagnostic 1
 
-Official Build lifetime invocation count: **2**  
-Official Build Attempt 3: **NOT EXECUTED / NOT CONSUMED**  
-Attempt-3 reservation: **NOT CREATED**  
-Attempt-3 launched marker: **NOT CREATED**  
-Attempt-3 BuildRoot: **NOT CREATED**  
-Attempt-3 freeze candidate: **NOT CREATED**  
-Galaxy Validation: **NOT EXECUTED**
+Confirmed:
+- exact R3 SHA/bytes/lines match authority,
+- Windows PowerShell parser error count for R3 = `0`,
+- R3 main `try` AST exists,
+- child PowerShell `-Command` probe executed and propagated exit `23`.
 
-The exact R3 artifact remains the independently validated runner authority, but a new R3 execution must not be attempted until the Windows child-invocation anomaly is understood and Control Tower explicitly re-authorizes an execution mechanism.
+The diagnostic itself then failed due to a Control Tower-authored empty-stderr `.Trim()` bug. This failure did not execute R3.
+
+### Diagnostic 2 — File transport probe V2
+
+Confirmed:
+- exact R3 identity: PASS
+- `R3_PARSE_ERROR_COUNT=0`
+- disposable local child `-File` probe emitted sentinel `DUONIX_CHILD_FILE_PROBE_OK`
+- disposable local child `-File` probe propagated exact exit `37`
+- `TRANSPORT_PROBE=PASS`
+- `TRANSPORT_PROBE_EXITCODE=0`
+- `R3_EXECUTION=0`
+
+Therefore generic Windows PowerShell child `-File` transport is **working correctly**.
+
+R3 NTFS streams observed:
+- `:$DATA` length `138535`
+- `RVContext` length `60`
+- `Zone.Identifier` length `328`
+
+The disposable local probe did not establish the same downloaded-file ADS context.
 
 ## 7. Current Blocker
 
 `LC-01-A3-WIN-INVOCATION-TRANSPORT-01`
 
-Classification:
-- `WINDOWS EXECUTION TRANSPORT / LAUNCH WRAPPER DIAGNOSTIC`
-- NOT Candidate defect.
-- NOT Toolchain D defect.
-- NOT R3 pre-execution validation defect.
-- NOT an Official Build failure because the Official Build process was not launched.
+Refined classification:
+- `WINDOWS DOWNLOADED-SCRIPT EXECUTION CONTEXT / EXECUTION-POLICY-OR-ADS DIAGNOSIS`
+- NOT Candidate defect
+- NOT Toolchain D defect
+- NOT R3 parser defect
+- NOT generic child `-File` transport defect
+- NOT Official Build failure because Official Build never launched
 
-Observed anomaly:
-- parent wrapper reported child exit code 0,
-- but exact R3 main-body prerequisite side effects are all absent.
+Known differential:
+- R3 has `Zone.Identifier` and `RVContext` alternate data streams.
+- harmless disposable local `-File` probe runs correctly.
 
-Root cause: `미확인`.
+Root cause: **미확인** until effective child execution policy and exact ADS contents are read.
 
 ## 8. Control Tower Disposition
 
-- Previous provisional `Attempt 3 consumed / lifetime count 3` interpretation is WITHDRAWN.
-- Attempt 3 remains available in principle because no reservation or launch authority exists, but execution is temporarily HOLD pending transport diagnosis.
-- Do not create Attempt-3 markers manually.
-- Do not create the BuildRoot manually.
-- Do not rerun R3 using the previous wrapper.
-- Do not modify R3.
+- Exact R3 remains the independently validated runner authority.
+- Attempt 3 remains available in principle because no reservation or launch marker exists.
+- **Do not execute R3 again yet.**
+- Do not modify R3 main data stream.
+- Do not remove or alter alternate data streams until Control Tower has recorded their contents and effective policy.
 - Galaxy Validation / Official Frozen Dist promotion / LC01-MOB-06+ / LC-02 remain unauthorized.
 
 ## 9. Next Single Action
 
-**Perform a harmless Windows PowerShell invocation-transport diagnostic only: parse the exact R3 with the Windows PowerShell AST parser, verify child `-Command` execution, and verify child `-File` execution using a disposable sentinel probe script. Do not execute R3. Return the diagnostic result to Control Tower for a corrected one-time Attempt-3 execution mechanism decision.**
+**Read only the child Windows PowerShell effective execution-policy scopes, the exact R3 `Zone.Identifier` and `RVContext` alternate-data-stream contents, and R3 Authenticode status. Do not execute or unblock R3. Return the output to Control Tower for the one-time Attempt-3 execution-mechanism decision.**
