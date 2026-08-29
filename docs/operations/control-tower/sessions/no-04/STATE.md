@@ -5,17 +5,16 @@ Status: ACTIVE
 
 ## 1. Major Work Unit Count
 
-Current count: **3**
+Current count: **4**
 
 Completed major work units:
 
 1. No.3 state recovery and reconstructed baseline disposition.
 2. Attempt-3 runner provenance and exact artifact recovery disposition.
-3. Attempt-3 Pre-Execution Runner Artifact Validation disposition — initial FAIL/HOLD with four runner-level blockers.
+3. Attempt-3 initial Pre-Execution Runner Artifact Validation disposition — FAIL/HOLD with four runner-level blockers.
+4. Attempt-3 runner remediation loop — R2 reduced blockers to one; R3 independently validated FINAL PASS / blockers 0; Control Tower closed the remediation loop.
 
 Rotation band: **CONTINUE**
-
-The Attempt-3 runner remediation loop remains open. R2 independent Validation reduced the open blockers from four to one. R3 preparation has now addressed that reported defect, but this is not counted as a completed major work unit until independent R3 Validation and Control Tower disposition.
 
 ## 2. Baseline
 
@@ -54,118 +53,79 @@ Current gate state:
 - `LC01-MOB-06+ = HOLD`
 - `LC-02 = NOT ACTIVE`
 
-## 4. Completed / Approved
+## 4. Attempt-3 Runner Authority
 
-- CPU Speed Slider Direction Fix: `SOURCE CHANGE FINAL APPROVED / CLOSED` by No.4 based on recovered Architecture + independent Validation evidence.
-- R5 independent dynamic validation: `FINAL PASS / blockers 0`; do not rerun R5.
-- Historical R1 runner:
-  - filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS.ps1`
-  - SHA-256: `40cdcc80031dd7bf130f8e7a60f152a36dc74f7fdbc290c4e94f7052112fc2d9`
-  - bytes: `135407`
-  - lines: `2638`
-- R2 runner:
-  - filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R2.ps1`
-  - SHA-256: `cd5c740fbe9b4d759a502b07747f5a542e01ff3effbce71e3f24c570944163d2`
-  - bytes: `138460`
-  - lines: `2707`
-- R2 independent Validation: `FAIL / HOLD`, blocker count `1`.
-- Three R1 blockers independently CLOSED in R2:
-  1. `LC-01-A3-IV-W3C-NAMESPACE-PREFIX-ALLOWLIST-01`
-  2. `LC-01-A3-IV-PROTOCOL-RELATIVE-SCAN-SCOPE-01`
-  3. `LC-01-A3-IV-BUILD-WORKSPACE-LEAK-SCOPE-01`
-- R3 Build/Release preparation completed under PREPARATION ONLY authority.
-- R3 exact artifact identity independently recomputed by No.4:
-  - filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R3.ps1`
-  - SHA-256: `8f6d67ce4af29a2812c2a181bb712edf57940e450dd8a70c30a9a1d6a8dfda07`
-  - bytes: `138535`
-  - lines: `2709`
-- No.4 independently recomputed R2 → R3 diff:
-  - hunks: `1`
-  - added lines: `3`
-  - removed lines: `1`
-  - changed function: `Resolve-LocalHtmlResourcePath`
-- No.4 directly confirmed:
-  - leading `./` fail-closed rejection exists,
-  - former leading `./` normalization loop occurrence = `0`,
-  - Official Build Start-Process site = exactly `1`,
-  - expected-37 non-build Start-Process site = exactly `1`.
+Historical R1 runner:
+- filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS.ps1`
+- SHA-256: `40cdcc80031dd7bf130f8e7a60f152a36dc74f7fdbc290c4e94f7052112fc2d9`
+- status: historical failed-preexecution artifact; NOT AUTHORIZED
 
-## 5. Open / HOLD
+Historical R2 runner:
+- filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R2.ps1`
+- SHA-256: `cd5c740fbe9b4d759a502b07747f5a542e01ff3effbce71e3f24c570944163d2`
+- status: historical failed-preexecution artifact; NOT AUTHORIZED
 
-The only previously open blocker remains pending independent R3 validation:
+Current exact R3 runner:
+- filename: `DUONIX-LC01-OFFICIAL-BUILD-FREEZE-A3-WINDOWS-R3.ps1`
+- SHA-256: `8f6d67ce4af29a2812c2a181bb712edf57940e450dd8a70c30a9a1d6a8dfda07`
+- bytes: `138535`
+- lines: `2709`
 
-`LC-01-A3-IV-HTML-RUNTIME-RESOURCE-NONLOCAL-BYPASS-01`
+No.4 directly recomputed the R3 identity and R2 → R3 minimal diff before independent Validation.
 
-R2 defect:
-- leading `./` current-directory segments were normalized and accepted.
+## 5. Latest Independent Validation
 
-R3 claimed/directly spot-checked correction:
-- leading `./` is rejected fail-closed before query/fragment cutting,
-- normalization loop removed,
-- embedded `.` / `..`, URI scheme, protocol-relative, backslash and DistManifest existence protections retained.
+`[DUONIX] 70 Validation / Integration`
 
-Status:
-- `PENDING INDEPENDENT R3 VALIDATION`
+R3 Pre-Execution Runner Artifact Validation:
+- `PRE-EXECUTION RUNNER ARTIFACT VALIDATION = FINAL PASS`
+- blocker count: `0`
+- exact R3 identity: PASS
+- R2 → R3 differential recomputation: `PASS / EXECUTED`
+- existing PASS-area preservation: `PASS`
+- prohibited-action static audit: `PASS`
+- Windows PowerShell parser: `NOT EXECUTED`
 
-Classification remains:
-- `VALIDATION-INFRA / PRE-EXECUTION RUNNER DEFECT` until independent R3 validation closes it.
-- NOT Candidate product defect.
-- NOT evidence of CPU Speed Slider Direction Fix failure.
-- NOT Toolchain D corruption.
-- NOT an Official Build Attempt 3 failure because Attempt 3 has not run.
+All four original runner blockers are independently CLOSED:
+1. `LC-01-A3-IV-W3C-NAMESPACE-PREFIX-ALLOWLIST-01`
+2. `LC-01-A3-IV-HTML-RUNTIME-RESOURCE-NONLOCAL-BYPASS-01`
+3. `LC-01-A3-IV-PROTOCOL-RELATIVE-SCAN-SCOPE-01`
+4. `LC-01-A3-IV-BUILD-WORKSPACE-LEAK-SCOPE-01`
 
-## 6. Latest Independent Validation
+Parser unavailability was explicitly not treated as a blocker by the approved R3 validation contract; the runner itself was not executed during Validation.
 
-Latest independent verdict remains R2 runner gate:
-- `PRE-EXECUTION RUNNER ARTIFACT VALIDATION = FAIL / HOLD`
-- blockers: `1`
-
-R3 independent validation:
-- `NOT YET EXECUTED`
-
-R2 prohibited-action static audit:
-- `PASS`
-
-Windows PowerShell parser for R3 preparation:
-- `NOT EXECUTED`
-
-## 7. Build / Release State
+## 6. Build / Release State
 
 Official Build lifetime invocation count: **2**  
-Attempt 3: **NOT EXECUTED / NOT AUTHORIZED**  
+Attempt 3: **NOT YET EXECUTED**  
 R1 runner execution: **0**  
 R2 runner execution: **0**  
 R3 runner execution: **0**  
-Reservation marker creation: **NOT AUTHORIZED**  
-Launch marker creation: **NOT AUTHORIZED**  
-Freeze candidate creation for Attempt 3: **NOT EXECUTED**  
+Attempt-3 reservation: **NOT YET CREATED**  
+Attempt-3 launch marker: **NOT YET CREATED**  
+Attempt-3 freeze candidate: **NOT YET CREATED**  
 Galaxy Validation: **NOT EXECUTED**
 
 Historical frozen-dist candidate is not authoritative for the current post-slider-fix source.
 
-## 8. Current Control Tower Approval
+## 7. Control Tower Disposition
 
-R3 PREPARATION ONLY is complete.
+Control Tower accepts the independent R3 FINAL PASS / blockers 0 and closes the Attempt-3 runner remediation loop.
 
-R3 is **NOT AUTHORIZED FOR EXECUTION**.
+The exact R3 runner identified above is now **AUTHORIZED FOR ONE OFFICIAL BUILD ATTEMPT 3 EXECUTION ONLY**.
 
-Control Tower authorizes only the next independent gate:
-- `[DUONIX] 70 Validation / Integration`
-- `LC-01 OFFICIAL BUILD ATTEMPT 3 — R3 PRE-EXECUTION RUNNER ARTIFACT VALIDATION`
+Authorization constraints:
+- exact R3 filename/SHA/bytes/lines must match before execution,
+- canonical source and Toolchain D authorities must match,
+- runner's fresh-root / historical-marker / reservation guards must remain satisfied,
+- expected-37 non-build propagation probe may run as designed,
+- Official Build launch may occur exactly once,
+- lifetime invocation count changes from 2 to 3 only after the Official Build process actually launches,
+- no automatic retry is authorized,
+- if Attempt 3 launches, it is consumed regardless of later build/evidence outcome,
+- only the runner-produced freeze candidate may be created and it must remain `official_frozen_dist=false`,
+- Galaxy Validation, LC01-MOB-06+ progression, LC-02 activation, game-source modification, commit/push/PR/deploy remain unauthorized.
 
-Explicitly not authorized:
-- R1/R2/R3 runner execution,
-- Official Build Attempt 3,
-- reservation creation,
-- launched-marker creation,
-- lifetime invocation count change,
-- freeze-candidate creation,
-- Galaxy Validation,
-- LC01-MOB-06+ progression,
-- LC-02 activation,
-- application-source modification,
-- game source commit/push/PR/deploy.
+## 8. Next Single Action
 
-## 9. Next Single Action
-
-**Provide the exact R3 runner artifact to `[DUONIX] 70 Validation / Integration` and perform a fresh independent R3 Pre-Execution Runner Artifact Gate. Do not execute the runner or Official Build Attempt 3.**
+**Send the exact R3 runner execution authorization to `[DUONIX] 80 Build / Release` and perform Official Build Attempt 3 exactly once under the runner's fail-closed guards. Return the complete build/evidence result to Control Tower and stop before Galaxy Validation or any further milestone progression.**
