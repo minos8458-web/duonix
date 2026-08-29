@@ -16,6 +16,8 @@ Completed major work units:
 
 Rotation band: **CONTINUE**
 
+The Official Build Attempt 3 execution cycle has not yet started because the Build/Release chat session cannot directly operate the approved Windows PC. This does not count as another completed major work unit.
+
 ## 2. Baseline
 
 Legacy reference:
@@ -71,7 +73,7 @@ Current exact R3 runner:
 - bytes: `138535`
 - lines: `2709`
 
-No.4 directly recomputed the R3 identity and R2 → R3 minimal diff before independent Validation.
+No.4 rechecked the user-supplied exact R3 artifact after execution instructions were returned; identity still matches the approved authority exactly.
 
 ## 5. Latest Independent Validation
 
@@ -86,18 +88,12 @@ R3 Pre-Execution Runner Artifact Validation:
 - prohibited-action static audit: `PASS`
 - Windows PowerShell parser: `NOT EXECUTED`
 
-All four original runner blockers are independently CLOSED:
-1. `LC-01-A3-IV-W3C-NAMESPACE-PREFIX-ALLOWLIST-01`
-2. `LC-01-A3-IV-HTML-RUNTIME-RESOURCE-NONLOCAL-BYPASS-01`
-3. `LC-01-A3-IV-PROTOCOL-RELATIVE-SCAN-SCOPE-01`
-4. `LC-01-A3-IV-BUILD-WORKSPACE-LEAK-SCOPE-01`
-
-Parser unavailability was explicitly not treated as a blocker by the approved R3 validation contract; the runner itself was not executed during Validation.
+All four original runner blockers are independently CLOSED.
 
 ## 6. Build / Release State
 
 Official Build lifetime invocation count: **2**  
-Attempt 3: **NOT YET EXECUTED**  
+Attempt 3: **AUTHORIZED BUT NOT YET EXECUTED**  
 R1 runner execution: **0**  
 R2 runner execution: **0**  
 R3 runner execution: **0**  
@@ -106,26 +102,36 @@ Attempt-3 launch marker: **NOT YET CREATED**
 Attempt-3 freeze candidate: **NOT YET CREATED**  
 Galaxy Validation: **NOT EXECUTED**
 
-Historical frozen-dist candidate is not authoritative for the current post-slider-fix source.
+Build/Release session limitation:
+- it cannot directly operate the approved Windows PC,
+- it correctly refused Linux/sandbox substitution,
+- it returned the exact Windows file placement requirements and one-time PowerShell 5.1 launch command,
+- no attempt has been consumed by this limitation.
 
 ## 7. Control Tower Disposition
 
-Control Tower accepts the independent R3 FINAL PASS / blockers 0 and closes the Attempt-3 runner remediation loop.
+Control Tower preserves the existing one-time authorization for exact R3 only.
 
-The exact R3 runner identified above is now **AUTHORIZED FOR ONE OFFICIAL BUILD ATTEMPT 3 EXECUTION ONLY**.
+No new authorization is required before the user's first exact Windows execution, provided all runner pre-launch guards pass.
 
-Authorization constraints:
-- exact R3 filename/SHA/bytes/lines must match before execution,
-- canonical source and Toolchain D authorities must match,
-- runner's fresh-root / historical-marker / reservation guards must remain satisfied,
-- expected-37 non-build propagation probe may run as designed,
-- Official Build launch may occur exactly once,
-- lifetime invocation count changes from 2 to 3 only after the Official Build process actually launches,
-- no automatic retry is authorized,
-- if Attempt 3 launches, it is consumed regardless of later build/evidence outcome,
-- only the runner-produced freeze candidate may be created and it must remain `official_frozen_dist=false`,
-- Galaxy Validation, LC01-MOB-06+ progression, LC-02 activation, game-source modification, commit/push/PR/deploy remain unauthorized.
+Execution requirements:
+- required files are placed in `$HOME\Downloads` with exact filenames,
+- exact R3 identity must pass before child execution,
+- Attempt-3 reservation and launched markers must not pre-exist,
+- the Attempt-3 build-owned root must not pre-exist in a nonempty state,
+- the one approved Windows PowerShell 5.1 command is executed exactly once,
+- if the Official Build process launches, lifetime invocation count becomes 3 and Attempt 3 is consumed regardless of later outcome,
+- no automatic/manual retry is authorized.
+
+Still unauthorized:
+- second R3 execution,
+- Galaxy Validation,
+- Official Frozen Dist promotion,
+- LC01-MOB-06+ progression,
+- LC-02 activation,
+- game-source modification,
+- commit/push/PR/deploy.
 
 ## 8. Next Single Action
 
-**Send the exact R3 runner execution authorization to `[DUONIX] 80 Build / Release` and perform Official Build Attempt 3 exactly once under the runner's fail-closed guards. Return the complete build/evidence result to Control Tower and stop before Galaxy Validation or any further milestone progression.**
+**On the approved Windows PC, place the exact required Attempt-3 inputs in `$HOME\Downloads`, confirm the Attempt-3 reservation/launched markers and nonempty build-owned root are absent, then execute the approved one-line Windows PowerShell 5.1 command exactly once. Return the complete stdout/stderr, `DUONIX_R3_CHILD_EXITCODE`, and generated Attempt-3 evidence/artifact results to `[DUONIX] 80 Build / Release`; do not rerun R3.**
