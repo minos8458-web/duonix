@@ -16,7 +16,7 @@ Completed major work units:
 
 Rotation band: **CONTINUE**
 
-The Official Build Attempt 3 execution cycle remains open. No Official Build Attempt 3 reservation, launch marker, BuildRoot, evidence, log, artifact, or freeze-candidate output exists.
+The Official Build Attempt 3 execution cycle remains open and is not counted as another completed major work unit until generated build evidence/artifacts are independently validated and Control Tower disposes the result.
 
 ## 2. Baseline
 
@@ -38,7 +38,6 @@ Toolchain D:
 
 GitHub operations repository:
 - `minos8458-web/duonix`
-- Control Tower operations documentation is stored here.
 - current LC-01 application source has **not yet been migrated into this repository**.
 
 Git base branch / commit for current LC-01 application source artifact: `미확인`.  
@@ -65,89 +64,90 @@ Historical R1 and R2 runners remain non-authoritative for execution.
 
 ## 5. Corrected Attempt-3 Execution State
 
-A previously approved Windows wrapper invocation returned:
-- `DUONIX_R3_CHILD_EXITCODE=0`
+A previous Windows wrapper returned `DUONIX_R3_CHILD_EXITCODE=0`, but direct evidence recovery proved all mandatory R3 side effects absent. That wrapper result is therefore not accepted as evidence that R3 executed.
 
-That output is **not accepted as evidence of R3 execution** because later read-only evidence recovery proved all mandatory R3 top-level side effects absent:
-- Attempt-3 reservation marker: ABSENT
-- Attempt-3 launched marker: ABSENT
-- Attempt-3 BuildRoot: ABSENT
-- Attempt-3 evidence/log/artifact directories: ABSENT
-- status JSON: ABSENT
-- provenance JSON: ABSENT
-- freeze candidate: ABSENT
-
-Therefore:
+Current authoritative state:
 - Official Build Attempt 3: **NOT EXECUTED / NOT CONSUMED**
 - Official Build lifetime invocation count: **2**
-- Attempt-3 reservation: **NOT CREATED**
-- Attempt-3 launch marker: **NOT CREATED**
+- Attempt-3 reservation marker: **ABSENT**
+- Attempt-3 launched marker: **ABSENT**
+- Attempt-3 BuildRoot: **ABSENT**
+- Attempt-3 evidence/log/artifact directories: **ABSENT**
+- Attempt-3 freeze candidate: **ABSENT**
 - Galaxy Validation: **NOT EXECUTED**
 
-Do not manually create markers or BuildRoot.
-
-## 6. Windows Invocation Transport Diagnostics
+## 6. Windows Invocation / Transport Findings
 
 Confirmed:
-- exact R3 SHA/bytes/lines match authority,
-- Windows PowerShell parser error count for R3 = `0`,
+- exact R3 identity matches authority,
+- Windows PowerShell parser errors = `0`,
 - R3 main `try` AST exists,
-- child PowerShell `-Command` probe executes and propagates exact exit `23`,
-- disposable local child `-File` probe executes, emits sentinel, and propagates exact exit `37`,
-- therefore generic Windows PowerShell child `-File` transport is working.
+- child PowerShell `-Command` transport works and propagates exit codes,
+- disposable child `-File` transport works and propagates exit codes,
+- child process launched with `-ExecutionPolicy Bypass` has effective policy `Bypass` and no MachinePolicy/UserPolicy override.
 
-Exact child execution-policy scopes when launched with `-ExecutionPolicy Bypass`:
-- MachinePolicy = Undefined
-- UserPolicy = Undefined
-- Process = Bypass
-- CurrentUser = Undefined
-- LocalMachine = Undefined
-- Effective = Bypass
+Downloaded R3 originally carried:
+- `Zone.Identifier`, length `328`, `ZoneId=3`,
+- `RVContext`, length `60`,
+- Authenticode status `NotSigned`.
 
-Exact R3 NTFS streams:
-- `:$DATA` length `138535`
-- `RVContext` length `60`
-- `Zone.Identifier` length `328`
+Transport normalization executed with `Unblock-File` only.
 
-Exact `Zone.Identifier` content confirms Internet-zone transport metadata:
-- `[ZoneTransfer]`
-- `ZoneId=3`
-- ReferrerUrl = ChatGPT conversation URL
-- HostUrl = ChatGPT file-download URL
+Post-normalization direct verification:
+- R3 SHA-256 = `8f6d67ce4af29a2812c2a181bb712edf57940e450dd8a70c30a9a1d6a8dfda07`
+- bytes = `138535`
+- lines = `2709`
+- `IDENTITY_UNCHANGED=True`
+- `Zone.Identifier` = **ABSENT**
+- `RVContext` = **PRESENT**
+- `R3_EXECUTION=0`
 
-Authenticode:
-- status = `NotSigned`
-- PowerShell status message states the downloaded script is not digitally signed and cannot execute under the current system context.
+Therefore the approved R3 default data stream was not modified. Only the Internet-zone transport metadata was removed.
 
-Microsoft documentation confirms that Internet-downloaded scripts may carry `Zone.Identifier`, and `Unblock-File` removes that alternate data stream without changing the script's execution policy. The exact R3 main data-stream SHA/bytes/lines remain the artifact authority.
+Causal attribution:
+- `Zone.Identifier` / downloaded-script context remains the strongest differential from the successful local probe,
+- but because the child process effective policy was already `Bypass`, Control Tower does **not** claim that MOTW was proven as the sole cause of the first no-side-effect invocation.
 
-## 7. Current Blocker
+## 7. Transport Blocker Disposition
 
 `LC-01-A3-WIN-INVOCATION-TRANSPORT-01`
 
-Refined classification:
-- `WINDOWS DOWNLOADED-SCRIPT / MARK-OF-THE-WEB EXECUTION CONTEXT`
-- NOT Candidate defect
-- NOT Toolchain D defect
-- NOT R3 parser defect
-- NOT generic child `-File` transport defect
-- NOT Official Build failure because Official Build never launched
+Status: **SUFFICIENTLY MITIGATED FOR A CONTROLLED ONE-TIME EXECUTION**.
 
-Strongest current hypothesis:
-- the downloaded R3's `Zone.Identifier (ZoneId=3)` / downloaded-script trust context is the differentiator between R3 and the successful disposable local `-File` probe.
+Rationale:
+- exact R3 parser is clean,
+- exact R3 identity is unchanged,
+- generic child `-Command` transport is directly proven,
+- Internet-zone ADS has been removed without modifying R3 `$DATA`,
+- Attempt 3 remains unconsumed and all execution guards are clean.
 
-Root cause status:
-- **strongly indicated but not yet proven by an execution after transport normalization**.
+This does not retroactively prove the root cause of the earlier wrapper anomaly.
 
-## 8. Control Tower Disposition
+## 8. Control Tower Authorization
 
-- Exact R3 remains the independently validated runner authority.
-- Attempt 3 remains available because no reservation or launch marker exists.
-- Do not modify the R3 main data stream.
-- Do not create Attempt-3 markers or BuildRoot manually.
-- Do not execute R3 until Control Tower authorizes transport-metadata normalization.
-- Galaxy Validation / Official Frozen Dist promotion / LC01-MOB-06+ / LC-02 remain unauthorized.
+Control Tower authorizes **exactly one** Official Build Attempt 3 execution of the exact R3 identity above, using a corrected Windows PowerShell child `-Command` transport only.
+
+Mandatory preconditions immediately before launch:
+- exact R3 SHA/bytes/lines still match,
+- `Zone.Identifier` remains absent,
+- Attempt-3 reservation marker absent,
+- Attempt-3 launched marker absent,
+- exact Attempt-3 BuildRoot absent.
+
+After this authorized launch command is issued, **do not execute R3 again regardless of exit code or visible output** until persistent markers/evidence are inspected.
+
+Still unauthorized:
+- R1/R2 execution,
+- previous failed/no-side-effect wrapper reuse,
+- manual marker creation,
+- manual BuildRoot creation,
+- any automatic retry,
+- Galaxy Validation,
+- Official Frozen Dist promotion,
+- LC01-MOB-06+ progression,
+- LC-02 activation,
+- source modification.
 
 ## 9. Next Single Action
 
-**Normalize only the exact R3 local Windows transport metadata by removing `Zone.Identifier` with `Unblock-File`, then immediately verify that the R3 default-stream SHA-256 / bytes / lines are unchanged and `Zone.Identifier` is absent. Do not execute R3 in the same step. Return the verification output to Control Tower.**
+**Execute the exact R3 once through the newly authorized child `-Command` transport after the mandatory identity/guard checks, then return the complete terminal output. Do not rerun R3 under any outcome.**
